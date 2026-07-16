@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ancestral Brain — Your life's work, running at home.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #0a0a0a;
+      --amber: #f5a623;
+      --amber-hover: #e8941a;
+      --teal: #4ecdc4;
+      --white: #ffffff;
+      --gray: #999999;
+      --gray-light: #1a1a1a;
+      --gray-mid: #2a2a2a;
+      --border: rgba(255,255,255,0.08);
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,10,10,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 5%;
+      height: 64px;
+    }
+
+    .nav-wordmark {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -0.02em;
+      text-decoration: none;
+    }
+
+    .btn-amber {
+      display: inline-block;
+      background: var(--amber);
+      color: #000;
+      font-weight: 600;
+      font-size: 14px;
+      padding: 10px 20px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s ease, transform 0.1s ease;
+    }
+
+    .btn-amber:hover {
+      background: var(--amber-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-amber:active {
+      transform: translateY(0);
+    }
+
+    .btn-ghost {
+      display: inline-block;
+      background: transparent;
+      color: var(--white);
+      font-weight: 600;
+      font-size: 16px;
+      padding: 12px 28px;
+      border-radius: 6px;
+      border: 1.5px solid rgba(255,255,255,0.25);
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.2s ease, background 0.2s ease;
+    }
+
+    .btn-ghost:hover {
+      border-color: rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.05);
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 5%;
+      overflow: hidden;
+    }
+
+    .hero-gradient {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 60% 50% at 30% 40%, rgba(245,166,35,0.07) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 60% at 70% 60%, rgba(78,205,196,0.06) 0%, transparent 70%);
+      animation: gradientShift 12s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+
+    @keyframes gradientShift {
+      0%   { opacity: 0.6; transform: scale(1) translate(0, 0); }
+      50%  { opacity: 1;   transform: scale(1.08) translate(2%, -2%); }
+      100% { opacity: 0.7; transform: scale(1.04) translate(-2%, 3%); }
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 1;
+      max-width: 800px;
+    }
+
+    .hero h1 {
+      font-size: clamp(38px, 7vw, 64px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 24px;
+    }
+
+    .hero-sub {
+      font-size: 18px;
+      color: var(--gray);
+      max-width: 560px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-amber.hero-cta {
+      font-size: 16px;
+      padding: 14px 32px;
+    }
+
+    /* ── SECTION BASE ── */
+    section {
+      padding: 100px 5%;
+    }
+
+    .section-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-headline {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      font-size: 18px;
+      color: var(--gray);
+      margin-bottom: 56px;
+    }
+
+    /* ── PROBLEM ── */
+    #problem {
+      background: var(--gray-light);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    #problem .section-headline {
+      max-width: 700px;
+    }
+
+    .pain-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 48px;
+    }
+
+    .pain-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 32px;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .pain-card:hover {
+      border-color: rgba(245,166,35,0.3);
+      transform: translateY(-3px);
+    }
+
+    .pain-card h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--amber);
+      margin-bottom: 12px;
+    }
+
+    .pain-card p {
+      font-size: 15px;
+      color: var(--gray);
+      line-height: 1.65;
+    }
+
+    /* ── HOW / SOLUTION ── */
+    #how .section-sub {
+      margin-bottom: 16px;
+    }
+
+    .feature-note {
+      font-size: 15px;
+      color: var(--teal);
+      margin-bottom: 52px;
+      font-weight: 600;
+    }
+
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 24px;
+      margin-bottom: 64px;
+    }
+
+    .feature-card {
+      background: var(--gray-light);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 32px;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .feature-card:hover {
+      border-color: rgba(78,205,196,0.3);
+      transform: translateY(-3px);
+    }
+
+    .feature-icon {
+      font-size: 28px;
+      margin-bottom: 14px;
+      display: block;
+    }
+
+    .feature-card h3 {
+      font-size: 17px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: var(--white);
+    }
+
+    .feature-card p {
+      font-size: 14px;
+      color: var(--gray);
+      line-height: 1.65;
+    }
+
+    /* ── TERMINAL MOCK ── */
+    .terminal {
+      background: #0d1117;
+      border: 1px solid rgba(78,205,196,0.25);
+      border-radius: 10px;
+      padding: 32px 36px;
+      max-width: 680px;
+      margin: 0 auto;
+      font-family: 'Menlo', 'Monaco', 'Consolas', 'Courier New', monospace;
+      font-size: 14px;
+      line-height: 1.8;
+    }
+
+    .terminal-bar {
+      display: flex;
+      gap: 7px;
+      margin-bottom: 20px;
+    }
+
+    .terminal-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .dot-red   { background: #ff5f56; }
+    .dot-yellow{ background: #ffbd2e; }
+    .dot-green { background: #27c93f; }
+
+    .terminal-prompt {
+      color: var(--teal);
+    }
+
+    .terminal-query {
+      color: var(--white);
+    }
+
+    .terminal-blank {
+      height: 10px;
+    }
+
+    .terminal-result-path {
+      color: var(--amber);
+    }
+
+    .terminal-result-meta {
+      color: #7a8a9a;
+    }
+
+    .terminal-result-note {
+      color: #a0aab4;
+      font-style: italic;
+    }
+
+    /* ── WAITLIST ── */
+    #waitlist {
+      background: var(--gray-light);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .waitlist-inner {
+      max-width: 480px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .waitlist-inner .section-headline {
+      margin-bottom: 12px;
+    }
+
+    .waitlist-sub {
+      font-size: 16px;
+      color: var(--gray);
+      margin-bottom: 36px;
+    }
+
+    .waitlist-form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .waitlist-form input {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 14px 16px;
+      font-size: 16px;
+      font-family: 'Inter', system-ui, sans-serif;
+      color: var(--white);
+      outline: none;
+      transition: border-color 0.2s ease;
+      width: 100%;
+    }
+
+    .waitlist-form input::placeholder {
+      color: #555;
+    }
+
+    .waitlist-form input:focus {
+      border-color: var(--amber);
+    }
+
+    .btn-amber.full-width {
+      width: 100%;
+      font-size: 16px;
+      padding: 14px 24px;
+      text-align: center;
+    }
+
+    .form-note {
+      font-size: 13px;
+      color: #555;
+      margin-top: 12px;
+    }
+
+    .form-message {
+      display: none;
+      font-size: 15px;
+      padding: 14px 18px;
+      border-radius: 6px;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+
+    .form-message.success {
+      background: rgba(39,201,63,0.12);
+      border: 1px solid rgba(39,201,63,0.3);
+      color: #27c93f;
+    }
+
+    .form-message.error {
+      background: rgba(255,95,86,0.1);
+      border: 1px solid rgba(255,95,86,0.3);
+      color: #ff5f56;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 40px 5%;
+      text-align: center;
+    }
+
+    .footer-text {
+      font-size: 14px;
+      color: #444;
+      margin-bottom: 10px;
+    }
+
+    .footer-links {
+      font-size: 13px;
+    }
+
+    .footer-links a {
+      color: #555;
+      text-decoration: none;
+      margin: 0 10px;
+      transition: color 0.2s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--gray);
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      nav {
+        padding: 0 20px;
+      }
+
+      section {
+        padding: 72px 20px;
+      }
+
+      .hero {
+        padding: 80px 20px;
+      }
+
+      .hero-ctas {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .btn-amber.hero-cta,
+      .btn-ghost {
+        width: 100%;
+        max-width: 320px;
+        text-align: center;
+      }
+
+      .terminal {
+        padding: 24px 20px;
+        font-size: 12px;
+        overflow-x: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── NAV ── -->
+  <nav>
+    <a href="#" class="nav-wordmark">Ancestral Brain</a>
+    <a href="#waitlist" class="btn-amber">Join Waitlist</a>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <section class="hero">
+    <div class="hero-gradient"></div>
+    <div class="hero-content">
+      <h1>Your life's work,<br>running at home.</h1>
+      <p class="hero-sub">A private AI vault for your music. Your files. Your machine. No cloud. No subscription. No limits.</p>
+      <div class="hero-ctas">
+        <a href="#waitlist" class="btn-amber hero-cta">Join the Waitlist →</a>
+        <a href="#how" class="btn-ghost">See How It Works</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PROBLEM ── -->
+  <section id="problem">
+    <div class="section-inner">
+      <h2 class="section-headline">You've made thousands of sessions. You can barely find them.</h2>
+      <div class="pain-grid">
+        <div class="pain-card">
+          <h3>That Loop You Need</h3>
+          <p>It's in a folder from 2019. Maybe. Under a project with a random name. Good luck.</p>
+        </div>
+        <div class="pain-card">
+          <h3>Voice Memo Gold</h3>
+          <p>You hummed a perfect hook at 2am. It's buried under 400 other voice memos.</p>
+        </div>
+        <div class="pain-card">
+          <h3>Stem Archaeology</h3>
+          <p>You need that bass stem from 6 months ago. You'd have to open 30 projects to find it.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SOLUTION ── -->
+  <section id="how">
+    <div class="section-inner">
+      <h2 class="section-headline">Ancestral Brain indexes your vault. You just ask.</h2>
+      <p class="section-sub">Runs on your machine. Your files never leave.</p>
+      <p class="feature-note">⚡ Offline. Private. Instant.</p>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <span class="feature-icon">🔍</span>
+          <h3>Find Anything</h3>
+          <p>Semantic search across sessions, stems, bounces, voice memos, and documents.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">🔒</span>
+          <h3>100% Private</h3>
+          <p>No uploads. No accounts. Runs offline. Your files are yours.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">🤖</span>
+          <h3>AI on Your Hardware</h3>
+          <p>Powered by Ollama. The model runs locally. Ask anything about your library.</p>
+        </div>
+        <div class="feature-card">
+          <span class="feature-icon">⚡</span>
+          <h3>Instant Answers</h3>
+          <p>Ask "What was that trap loop I made in February?" and get the file, not a search result.</p>
+        </div>
+      </div>
+
+      <div class="terminal">
+        <div class="terminal-bar">
+          <div class="terminal-dot dot-red"></div>
+          <div class="terminal-dot dot-yellow"></div>
+          <div class="terminal-dot dot-green"></div>
+        </div>
+        <div>
+          <span class="terminal-prompt">&gt; </span><span class="terminal-query">find that ambient loop I made after the studio session in March</span>
+        </div>
+        <div class="terminal-blank"></div>
+        <div class="terminal-result-path">Found: /Sessions/March/PostSession_ambient_v3.wav</div>
+        <div class="terminal-result-meta">BPM: 87 | Key: Am | Created: March 14, 2:41am</div>
+        <div class="terminal-result-note">"Recorded after the late session. Reverb-heavy. Might work for the bridge."</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── EXPLAINER ── -->
+  <section id="explainer" style="padding:80px 24px;text-align:center;background:#0d0d0d">
+    <div style="max-width:800px;margin:0 auto">
+      <h2 style="font-size:clamp(22px,4vw,34px);font-weight:800;color:#fff;margin-bottom:12px">See it in action</h2>
+      <p style="color:#999;font-size:16px;margin-bottom:32px">Watch how Ancestral Brain turns a messy hard drive into an answerable vault — in 60 seconds.</p>
+      <!-- VIDEO EMBED PLACEHOLDER — swap src when ready -->
+      <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:12px;border:1px solid #2a2a2a;background:#111">
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#444;font-family:monospace;font-size:14px;text-align:center">
+          <div style="font-size:48px;margin-bottom:12px">▶</div>
+          Explainer video coming soon
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── WAITLIST ── -->
+  <section id="waitlist">
+    <div class="waitlist-inner">
+      <h2 class="section-headline">Be first. Reserve your vault.</h2>
+      <p class="waitlist-sub">Free during beta. Ship limited to early waitlist members.</p>
+
+      <form class="waitlist-form" id="waitlist-form" novalidate>
+        <input type="text" id="name" name="name" placeholder="Your name (optional)" autocomplete="name">
+        <input type="email" id="email" name="email" placeholder="your@email.com" required autocomplete="email">
+        <button type="submit" class="btn-amber full-width" id="submit-btn">Join the Waitlist →</button>
+      </form>
+
+      <div class="form-message" id="form-message"></div>
+      <p class="form-note">No spam. Unsubscribe anytime. We're building this because we needed it.</p>
+      <p class="form-note" style="margin-top:8px">We store your email, nothing else.</p>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <p class="footer-text">© 2026 Ancestral Brain. Your life's work, running at home.</p>
+    <div class="footer-links">
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      var form = document.getElementById('waitlist-form');
+      var emailInput = document.getElementById('email');
+      var nameInput = document.getElementById('name');
+      var submitBtn = document.getElementById('submit-btn');
+      var message = document.getElementById('form-message');
+
+      function isValidEmail(val) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val.trim());
+      }
+
+      function showMessage(text, type) {
+        message.textContent = text;
+        message.className = 'form-message ' + type;
+        message.style.display = 'block';
+      }
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        var email = emailInput.value.trim();
+        var name = nameInput.value.trim();
+
+        if (!email) {
+          showMessage('Please enter your email address.', 'error');
+          emailInput.focus();
+          return;
+        }
+
+        if (!isValidEmail(email)) {
+          showMessage('That doesn\'t look like a valid email. Double-check it?', 'error');
+          emailInput.focus();
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending…';
+        message.style.display = 'none';
+
+        fetch('/waitlist.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: name, email: email })
+        })
+          .then(function (res) {
+            if (res.ok) {
+              form.reset();
+              showMessage('You\'re in. We\'ll reach out when it\'s ready.', 'success');
+              submitBtn.textContent = 'Joined ✓';
+            } else {
+              return res.text().then(function (t) { throw new Error(t || 'Server error'); });
+            }
+          })
+          .catch(function () {
+            showMessage('Something went wrong. Try again or email us directly.', 'error');
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Join the Waitlist →';
+          });
+      });
+    })();
+  </script>
+
+</body>
+</html>

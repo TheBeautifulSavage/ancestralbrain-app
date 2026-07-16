@@ -1,0 +1,12 @@
+.env
+.env.*
+!.env.example
+node_modules/
+target/
+*.sqlite
+*.db
+private/
+dist/
+.DS_Store
+*.log
+.deploy_creds.json
