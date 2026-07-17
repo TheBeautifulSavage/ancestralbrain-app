@@ -489,7 +489,10 @@
   <!-- ── NAV ── -->
   <nav>
     <a href="#" class="nav-wordmark">Ancestral Brain</a>
-    <a href="#waitlist" class="btn-amber">Join Waitlist</a>
+    <div style="display:flex;gap:10px;align-items:center">
+      <a href="login.php" style="font-size:14px;color:#999;text-decoration:none">Log In</a>
+      <a href="register.php" class="btn-amber">Get Access</a>
+    </div>
   </nav>
 
   <!-- ── HERO ── -->
@@ -499,7 +502,7 @@
       <h1>Your life's work,<br>running at home.</h1>
       <p class="hero-sub">A private AI vault for your music. Your files. Your machine. No cloud. No uploads. No lock-in.</p>
       <div class="hero-ctas">
-        <a href="#waitlist" class="btn-amber hero-cta">Join the Waitlist →</a>
+        <a href="register.php" class="btn-amber hero-cta">Create Account →</a>
         <a href="#how" class="btn-ghost">See How It Works</a>
       </div>
     </div>
@@ -588,76 +591,15 @@
     </div>
   </section>
 
-  <!-- ── WAITLIST ── -->
-  <section id="waitlist">
-    <div class="waitlist-inner">
-      <h2 class="section-headline">Be first. Reserve your vault.</h2>
-      <p class="waitlist-sub">Alpha access limited to the first 100 waitlist members.</p>
-
-      <form class="waitlist-form" id="waitlist-form" novalidate>
-        <input type="text" id="name" name="name" placeholder="Your name (optional)" autocomplete="name">
-        <input type="email" id="email" name="email" placeholder="your@email.com" required autocomplete="email">
-        <button type="submit" class="btn-amber full-width" id="submit-btn">Join the Waitlist →</button>
-      </form>
-
-      <div class="form-message" id="form-message"></div>
-
-      <!-- Revealed after successful signup -->
-      <div id="download-reveal" style="display:none;margin-top:28px;padding:24px;background:#111;border:1px solid #2a2a2a;border-radius:10px;text-align:left">
-        <p style="color:#f5a623;font-weight:800;font-size:18px;margin:0 0 8px">You're on the list. Here's the alpha.</p>
-
-        <!-- OS-detected download block -->
-        <div id="dl-detected" style="margin-bottom:16px;padding:10px 14px;background:#0d0d0d;border:1px solid #2a2a2a;border-radius:6px;font-size:13px;color:#666">
-          Detecting your OS…
-        </div>
-
-        <!-- Primary download button (updated by JS) -->
-        <a id="dl-primary" href="#" style="display:inline-block;background:#f5a623;color:#000;font-weight:700;padding:12px 24px;border-radius:6px;text-decoration:none;font-size:15px;margin-bottom:12px">↓ Download Alpha</a>
-
-        <!-- All platforms toggle -->
-        <div style="margin-top:8px">
-          <button onclick="document.getElementById('dl-all').style.display=document.getElementById('dl-all').style.display==='none'?'block':'none'"
-            style="background:transparent;border:none;color:#555;font-size:12px;cursor:pointer;text-decoration:underline">All platforms ↓</button>
-        </div>
-        <div id="dl-all" style="display:none;margin-top:12px">
-          <table style="width:100%;border-collapse:collapse;font-size:13px">
-            <tr>
-              <td style="padding:6px 0;color:#999">🍎 Mac — Apple Silicon (M1/M2/M3)</td>
-              <td style="padding:6px 0;text-align:right">
-                <a href="https://github.com/TheBeautifulSavage/ancestralbrain-app/releases/latest/download/Ancestral.Brain_0.1.0_aarch64.dmg"
-                   style="color:#f5a623;text-decoration:none;font-weight:600">.dmg ↓</a>
-              </td>
-            </tr>
-            <tr>
-              <td style="padding:6px 0;color:#999">🍎 Mac — Intel</td>
-              <td style="padding:6px 0;text-align:right">
-                <a href="https://github.com/TheBeautifulSavage/ancestralbrain-app/releases/latest/download/Ancestral.Brain_0.1.0_x64.dmg"
-                   style="color:#f5a623;text-decoration:none;font-weight:600">.dmg ↓</a>
-              </td>
-            </tr>
-            <tr>
-              <td style="padding:6px 0;color:#999">🪟 Windows</td>
-              <td style="padding:6px 0;text-align:right">
-                <a href="https://github.com/TheBeautifulSavage/ancestralbrain-app/releases/latest/download/Ancestral.Brain_0.1.0_x64-setup.exe"
-                   style="color:#f5a623;text-decoration:none;font-weight:600">.exe ↓</a>
-              </td>
-            </tr>
-            <tr>
-              <td style="padding:6px 0;color:#999">🐧 Linux (Debian/Ubuntu)</td>
-              <td style="padding:6px 0;text-align:right">
-                <a href="https://github.com/TheBeautifulSavage/ancestralbrain-app/releases/latest/download/ancestral-brain_0.1.0_amd64.deb"
-                   style="color:#f5a623;text-decoration:none;font-weight:600">.deb ↓</a>
-              </td>
-            </tr>
-          </table>
-        </div>
-
-        <p style="color:#ccc;font-size:13px;margin:16px 0 4px"><strong>Requires Ollama</strong> — the app guides you through setup on first launch.</p>
-        <p style="color:#555;font-size:12px;margin:4px 0 0">~15 MB app + ~8 GB Ollama models on first run</p>
+  <!-- ── GET ACCESS ── -->
+  <section id="access" style="background:#111;border-top:1px solid rgba(255,255,255,0.08);border-bottom:1px solid rgba(255,255,255,0.08)">
+    <div style="max-width:480px;margin:0 auto;text-align:center">
+      <h2 class="section-headline">Ready to claim your vault?</h2>
+      <p style="font-size:16px;color:#999;margin-bottom:36px">Create a free account to download the app and get started. Your files stay on your machine.</p>
+      <div style="display:flex;flex-direction:column;gap:14px;max-width:320px;margin:0 auto">
+        <a href="register.php" class="btn-amber full-width" style="display:block;padding:15px 24px;font-size:16px;font-weight:700;text-align:center;border-radius:8px">Create Account →</a>
+        <a href="login.php" class="btn-ghost" style="display:block;padding:14px 24px;font-size:15px;font-weight:600;text-align:center;border-radius:8px">Log In</a>
       </div>
-
-      <p class="form-note">No spam. Unsubscribe anytime. We're building this because we needed it.</p>
-      <p class="form-note" style="margin-top:8px">We store your email, nothing else.</p>
     </div>
   </section>
 
@@ -671,118 +613,7 @@
   </footer>
 
   <script>
-    (function () {
-      var form       = document.getElementById('waitlist-form');
-      var emailInput = document.getElementById('email');
-      var nameInput  = document.getElementById('name');
-      var submitBtn  = document.getElementById('submit-btn');
-      var message    = document.getElementById('form-message');
-
-      // OS detection
-      var BASE_DL = 'https://github.com/TheBeautifulSavage/ancestralbrain-app/releases/latest/download/';
-
-      function detectOS() {
-        var ua = navigator.userAgent;
-        var isAppleSilicon = /Mac/.test(ua) && !/Intel Mac/.test(ua) && !/iPhone|iPad/.test(ua);
-        var isMac   = /Mac|Macintosh/.test(ua) && !/iPhone|iPad/.test(ua);
-        var isWin   = /Win/.test(ua);
-        var isLinux = /Linux/.test(ua) && !/Android/.test(ua);
-
-        if (isAppleSilicon) return {
-          label: '\uD83C\uDF4E Mac \u2014 Apple Silicon detected (M1/M2/M3)',
-          href:  BASE_DL + 'Ancestral.Brain_0.1.0_aarch64.dmg',
-          btn:   '\u2193 Download for Mac (Apple Silicon)',
-          note:  'macOS 13+ \u00b7 Right-click app \u2192 Open on first launch'
-        };
-        if (isMac) return {
-          label: '\uD83C\uDF4E Mac \u2014 Intel detected',
-          href:  BASE_DL + 'Ancestral.Brain_0.1.0_x64.dmg',
-          btn:   '\u2193 Download for Mac (Intel)',
-          note:  'macOS 13+ \u00b7 Right-click app \u2192 Open on first launch'
-        };
-        if (isWin) return {
-          label: '\uD83E\uDE9F Windows detected',
-          href:  BASE_DL + 'Ancestral.Brain_0.1.0_x64-setup.exe',
-          btn:   '\u2193 Download for Windows',
-          note:  'Windows 10+ \u00b7 Click \u201cMore info\u201d \u2192 Run anyway if SmartScreen warns'
-        };
-        if (isLinux) return {
-          label: '\uD83D\uDC27 Linux detected',
-          href:  BASE_DL + 'ancestral-brain_0.1.0_amd64.deb',
-          btn:   '\u2193 Download for Linux (.deb)',
-          note:  'Debian/Ubuntu \u00b7 sudo dpkg -i ancestral-brain_*.deb'
-        };
-        return {
-          label: 'Choose your platform below',
-          href:  'https://github.com/TheBeautifulSavage/ancestralbrain-app/releases/latest',
-          btn:   '\u2193 All Downloads on GitHub',
-          note:  'Releases page has all platforms'
-        };
-      }
-
-      // Populate download block immediately on page load
-      (function () {
-        var os = detectOS();
-        var detectedEl = document.getElementById('dl-detected');
-        var primaryEl  = document.getElementById('dl-primary');
-        if (detectedEl) detectedEl.textContent = os.label;
-        if (primaryEl)  { primaryEl.textContent = os.btn; primaryEl.href = os.href; }
-      })();
-
-      function isValidEmail(val) {
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val.trim());
-      }
-
-      function showMessage(text, type) {
-        message.textContent = text;
-        message.className = 'form-message ' + type;
-        message.style.display = 'block';
-      }
-
-      form.addEventListener('submit', function (e) {
-        e.preventDefault();
-
-        var email = emailInput.value.trim();
-        var name  = nameInput.value.trim();
-
-        if (!email) {
-          showMessage('Please enter your email address.', 'error');
-          emailInput.focus();
-          return;
-        }
-        if (!isValidEmail(email)) {
-          showMessage("That doesn't look like a valid email. Double-check it?", 'error');
-          emailInput.focus();
-          return;
-        }
-
-        submitBtn.disabled = true;
-        submitBtn.textContent = 'Sending\u2026';
-        message.style.display = 'none';
-
-        fetch('/waitlist.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name: name, email: email })
-        })
-          .then(function (res) { return res.json(); })
-          .then(function (data) {
-            if (data.ok) {
-              form.reset();
-              showMessage(data.message || "You're on the list!", 'success');
-              submitBtn.textContent = 'Joined \u2713';
-              document.getElementById('download-reveal').style.display = 'block';
-            } else {
-              throw new Error(data.error || 'Server error');
-            }
-          })
-          .catch(function () {
-            showMessage('Something went wrong. Try again or email us directly.', 'error');
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Join the Waitlist \u2192';
-          });
-      });
-    })();
+    // No waitlist form JS needed — replaced by account system
   </script>
 
 </body>
