@@ -497,7 +497,7 @@
     <div class="hero-gradient"></div>
     <div class="hero-content">
       <h1>Your life's work,<br>running at home.</h1>
-      <p class="hero-sub">A private AI vault for your music. Your files. Your machine. No cloud. No subscription. No limits.</p>
+      <p class="hero-sub">A private AI vault for your music. Your files. Your machine. No cloud. No uploads. No lock-in.</p>
       <div class="hero-ctas">
         <a href="#waitlist" class="btn-amber hero-cta">Join the Waitlist →</a>
         <a href="#how" class="btn-ghost">See How It Works</a>
@@ -592,7 +592,7 @@
   <section id="waitlist">
     <div class="waitlist-inner">
       <h2 class="section-headline">Be first. Reserve your vault.</h2>
-      <p class="waitlist-sub">Free during beta. Ship limited to early waitlist members.</p>
+      <p class="waitlist-sub">Alpha access limited to the first 100 waitlist members.</p>
 
       <form class="waitlist-form" id="waitlist-form" novalidate>
         <input type="text" id="name" name="name" placeholder="Your name (optional)" autocomplete="name">
@@ -601,6 +601,16 @@
       </form>
 
       <div class="form-message" id="form-message"></div>
+
+      <!-- Revealed after successful signup -->
+      <div id="download-reveal" style="display:none;margin-top:28px;padding:24px;background:#111;border:1px solid #2a2a2a;border-radius:10px;text-align:left">
+        <p style="color:#f5a623;font-weight:800;font-size:18px;margin:0 0 8px">You're on the list. Here's the alpha.</p>
+        <p style="color:#ccc;font-size:14px;margin:0 0 16px">Mac (Apple Silicon) only. Unsigned build — right-click the app → <strong>Open</strong> the first time. This is normal for beta software.</p>
+        <p style="color:#ccc;font-size:14px;margin:0 0 16px"><strong>Requires Ollama</strong> — the app will guide you through installation on first launch if you don't have it.</p>
+        <a id="dmg-link" href="/downloads/AncestralBrain-alpha.dmg" style="display:inline-block;background:#f5a623;color:#000;font-weight:700;padding:12px 24px;border-radius:6px;text-decoration:none;font-size:15px">↓ Download Alpha (.dmg)</a>
+        <p style="color:#555;font-size:12px;margin:12px 0 0">macOS 13+ · Apple Silicon · ~15MB + ~8GB Ollama models on first run</p>
+      </div>
+
       <p class="form-note">No spam. Unsubscribe anytime. We're building this because we needed it.</p>
       <p class="form-note" style="margin-top:8px">We store your email, nothing else.</p>
     </div>
@@ -610,8 +620,8 @@
   <footer>
     <p class="footer-text">© 2026 Ancestral Brain. Your life's work, running at home.</p>
     <div class="footer-links">
-      <a href="#">Privacy</a>
-      <a href="#">Terms</a>
+      <a href="/privacy.html">Privacy</a>
+      <a href="/terms.html">Terms</a>
     </div>
   </footer>
 
@@ -660,13 +670,15 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name: name, email: email })
         })
-          .then(function (res) {
-            if (res.ok) {
+          .then(function (res) { return res.json(); })
+          .then(function (data) {
+            if (data.ok) {
               form.reset();
-              showMessage('You\'re in. We\'ll reach out when it\'s ready.', 'success');
+              showMessage(data.message || 'You\'re on the list!', 'success');
               submitBtn.textContent = 'Joined ✓';
+              document.getElementById('download-reveal').style.display = 'block';
             } else {
-              return res.text().then(function (t) { throw new Error(t || 'Server error'); });
+              throw new Error(data.error || 'Server error');
             }
           })
           .catch(function () {
