@@ -169,11 +169,9 @@ fn write_markdown(
 
 /// Minimal unix timestamp → "YYYY-MM-DD" formatter (no external deps).
 fn format_unix_date(ts: i64) -> String {
-    // Days since epoch
     let ts = ts.max(0) as u64;
     let days = ts / 86400;
 
-    // Gregorian calendar calculation
     let mut year = 1970u32;
     let mut remaining = days;
 
@@ -212,10 +210,13 @@ fn is_leap(year: u32) -> bool {
 
 /// Callback receives (pct: f32, status: String) after each file.
 /// `vault_root` is the root of the vault — used for writing `_ancestral_brain/` markdown.
+/// `embed_model` and `chat_model` come from hardware detection.
 pub fn index_folder<F>(
     conn: &Connection,
     folder: &Path,
     vault_root: &Path,
+    embed_model: &str,
+    chat_model: &str,
     mut on_progress: F,
 ) -> Result<Progress>
 where
@@ -224,6 +225,16 @@ where
     // Canonicalize vault root for reliable prefix stripping
     let vault_root = vault_root.canonicalize().unwrap_or_else(|_| vault_root.to_path_buf());
     let ab_dir = vault_root.join("_ancestral_brain");
+
+    // Create _ancestral_brain/ with restricted permissions (user-only on Unix)
+    if !ab_dir.exists() {
+        std::fs::create_dir_all(&ab_dir).ok();
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            std::fs::set_permissions(&ab_dir, std::fs::Permissions::from_mode(0o700)).ok();
+        }
+    }
 
     let entries: Vec<PathBuf> = WalkDir::new(folder)
         .follow_links(false)
@@ -263,7 +274,7 @@ where
             .unwrap_or(0);
         let size = meta_fs.len() as i64;
 
-        // Skip unchanged (but still write markdown if missing)
+        // Skip unchanged
         if let Some((db_mtime, db_size)) = db::get_file_state(conn, &path_str) {
             if db_mtime == mtime && db_size == size {
                 skipped += 1;
@@ -333,7 +344,7 @@ where
                 Ok(id) => id,
                 Err(_) => continue,
             };
-            if let Ok(emb) = ollama::embed(chunk_text) {
+            if let Ok(emb) = ollama::embed(chunk_text, embed_model) {
                 db::insert_embedding(conn, chunk_id, &emb).ok();
             }
         }
@@ -347,7 +358,7 @@ where
                 .parent()
                 .map(|p| p.to_string_lossy().to_string())
                 .unwrap_or_default();
-            ollama::generate_summary(&filename, &folder_str, &ext, &extra)
+            ollama::generate_summary(&filename, &folder_str, &ext, &extra, chat_model)
         } else {
             String::new()
         };

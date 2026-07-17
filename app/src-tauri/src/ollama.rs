@@ -4,8 +4,6 @@ use serde::{Deserialize, Serialize};
 use std::io::{BufRead, BufReader};
 
 const BASE: &str = "http://localhost:11434";
-const CHAT_MODEL: &str = "llama3.2:3b";
-const EMBED_MODEL: &str = "nomic-embed-text";
 
 /// Returns true if Ollama is reachable.
 pub fn is_running() -> bool {
@@ -79,7 +77,8 @@ where
 }
 
 /// Generate a short AI summary for a file. Returns empty string on any error.
-pub fn generate_summary(filename: &str, folder: &str, ext: &str, extra: &str) -> String {
+/// `model` is the chat model name (e.g. "llama3.2:3b").
+pub fn generate_summary(filename: &str, folder: &str, ext: &str, extra: &str, model: &str) -> String {
     #[derive(Serialize)]
     struct Message<'a> { role: &'a str, content: String }
     #[derive(Serialize)]
@@ -105,7 +104,7 @@ pub fn generate_summary(filename: &str, folder: &str, ext: &str, extra: &str) ->
     let resp: Resp = match client
         .post(format!("{BASE}/api/chat"))
         .json(&Req {
-            model: CHAT_MODEL,
+            model,
             messages: vec![Message { role: "user", content: prompt }],
             stream: false,
         })
@@ -120,7 +119,8 @@ pub fn generate_summary(filename: &str, folder: &str, ext: &str, extra: &str) ->
 }
 
 /// Get embedding vector for text. Returns Vec<f32>.
-pub fn embed(text: &str) -> Result<Vec<f32>> {
+/// `model` is the embedding model name (e.g. "nomic-embed-text").
+pub fn embed(text: &str, model: &str) -> Result<Vec<f32>> {
     #[derive(Serialize)]
     struct Req<'a> { model: &'a str, prompt: &'a str }
     #[derive(Deserialize)]
@@ -131,14 +131,15 @@ pub fn embed(text: &str) -> Result<Vec<f32>> {
         .build()?;
     let resp: Resp = client
         .post(format!("{BASE}/api/embeddings"))
-        .json(&Req { model: EMBED_MODEL, prompt: text })
+        .json(&Req { model, prompt: text })
         .send()?
         .json()?;
     Ok(resp.embedding)
 }
 
 /// RAG chat: given a question + context chunks, return an answer string.
-pub fn chat(question: &str, context_chunks: &[String]) -> Result<String> {
+/// `model` is the chat model name (e.g. "llama3.2:3b").
+pub fn chat(question: &str, context_chunks: &[String], model: &str) -> Result<String> {
     #[derive(Serialize)]
     struct Message<'a> { role: &'a str, content: String }
     #[derive(Serialize)]
@@ -162,7 +163,7 @@ pub fn chat(question: &str, context_chunks: &[String]) -> Result<String> {
     let resp: Resp = client
         .post(format!("{BASE}/api/chat"))
         .json(&Req {
-            model: CHAT_MODEL,
+            model,
             messages: vec![
                 Message { role: "system", content: system },
                 Message { role: "user", content: question.to_string() },

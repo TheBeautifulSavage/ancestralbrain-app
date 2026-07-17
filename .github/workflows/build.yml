@@ -1,0 +1,108 @@
+name: Build & Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    name: Build — ${{ matrix.platform }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Apple Silicon (M1/M2/M3)
+          - platform: aarch64-apple-darwin
+            os: macos-14
+            args: --target aarch64-apple-darwin
+
+          # Intel Mac
+          - platform: x86_64-apple-darwin
+            os: macos-13
+            args: --target x86_64-apple-darwin
+
+          # Windows x64
+          - platform: x86_64-pc-windows-msvc
+            os: windows-latest
+            args: --target x86_64-pc-windows-msvc
+
+          # Linux x64
+          - platform: x86_64-unknown-linux-gnu
+            os: ubuntu-22.04
+            args: --target x86_64-unknown-linux-gnu
+
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ── Linux system deps ──────────────────────────────────────────────────
+      - name: Install Linux deps
+        if: matrix.os == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            libgtk-3-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            patchelf \
+            libssl-dev \
+            pkg-config
+
+      # ── Rust toolchain ─────────────────────────────────────────────────────
+      - name: Install Rust stable + target
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.platform }}
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workdir: app/src-tauri
+
+      # ── Node ───────────────────────────────────────────────────────────────
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Install JS deps
+        working-directory: app
+        run: npm ci
+
+      # ── Build & Release ────────────────────────────────────────────────────
+      - name: Build + publish release
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          projectPath: app
+          tagName: ${{ github.ref_name }}
+          releaseName: 'Ancestral Brain ${{ github.ref_name }}'
+          releaseBody: |
+            ## Ancestral Brain ${{ github.ref_name }}
+
+            Private AI vault for your music. No cloud. No uploads. Runs on your machine.
+
+            ### Downloads
+            | Platform | File |
+            |----------|------|
+            | Mac — Apple Silicon (M1/M2/M3) | `Ancestral.Brain_*_aarch64.dmg` |
+            | Mac — Intel | `Ancestral.Brain_*_x64.dmg` |
+            | Windows | `Ancestral.Brain_*_x64-setup.exe` |
+            | Linux (Debian/Ubuntu) | `ancestral-brain_*_amd64.deb` |
+
+            ### First Run
+            - **macOS**: Right-click the app → **Open** (unsigned build)
+            - **Windows**: Click "More info" → "Run anyway" if SmartScreen warns
+            - **Linux**: `sudo dpkg -i ancestral-brain_*.deb`
+
+            ### Requirements
+            Ollama is required — the app guides you through setup on first launch.
+          releaseDraft: false
+          prerelease: true
+          args: ${{ matrix.args }}

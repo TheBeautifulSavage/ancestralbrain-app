@@ -24,7 +24,7 @@
 
     .container {
       width: 100%;
-      max-width: 520px;
+      max-width: 540px;
       text-align: center;
     }
 
@@ -41,6 +41,20 @@
       letter-spacing: 0.12em;
       text-transform: uppercase;
       margin-top: 6px;
+    }
+
+    /* ── Hardware badge ── */
+    .hw-badge {
+      display: inline-block;
+      background: rgba(78, 205, 196, 0.12);
+      border: 1px solid rgba(78, 205, 196, 0.3);
+      color: #4ecdc4;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-top: 10px;
+      letter-spacing: 0.04em;
     }
 
     /* ── State panels ── */
@@ -65,8 +79,60 @@
       font-size: 15px;
       color: #cccccc;
       line-height: 1.65;
-      max-width: 420px;
+      max-width: 440px;
       margin: 0 auto 28px;
+    }
+
+    /* ── Install tabs ── */
+    .install-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      color: #888;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      letter-spacing: 0.04em;
+    }
+    .tab-btn.active {
+      background: #f5a623;
+      border-color: #f5a623;
+      color: #000;
+    }
+    .tab-btn:hover:not(.active) {
+      border-color: #555;
+      color: #ccc;
+    }
+
+    .install-panel { display: none; }
+    .install-panel.active { display: block; }
+
+    /* ── Code block ── */
+    .code-block {
+      background: #0d1117;
+      border: 1px solid #2a2a2a;
+      border-radius: 6px;
+      padding: 14px 18px;
+      font-family: 'Menlo', 'Monaco', monospace;
+      font-size: 13px;
+      color: #4ecdc4;
+      text-align: left;
+      margin: 0 auto 16px;
+      max-width: 420px;
+      overflow-x: auto;
+      white-space: pre;
+      word-break: normal;
     }
 
     /* ── Buttons ── */
@@ -122,7 +188,7 @@
       border-radius: 8px;
       padding: 20px;
       margin: 0 auto 24px;
-      max-width: 420px;
+      max-width: 440px;
       text-align: left;
     }
 
@@ -210,35 +276,85 @@
       color: #444;
       margin-top: 16px;
     }
+
+    .model-reason {
+      font-size: 12px;
+      color: #4ecdc4;
+      margin-top: 12px;
+      font-style: italic;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="app-title">Ancestral Brain</div>
     <div class="app-subtitle">Alpha — Producer Vault</div>
+    <div class="hw-badge" id="hw-badge">Detecting hardware…</div>
 
     <!-- ── State 1: Ollama not installed ── -->
     <div id="state-not-installed" class="state-panel">
       <div class="icon">🤖</div>
       <h1 class="headline">AI engine not found</h1>
       <p class="body-text">
-        Ancestral Brain runs AI locally on your Mac using Ollama — free, private, no cloud.
-        Download and install it first.
+        Ancestral Brain runs AI locally using Ollama — free, private, no cloud.
+        Install it for your platform below, then click <strong>Check Again</strong>.
       </p>
-      <div class="cta-stack">
-        <button class="btn-primary" id="download-ollama-btn">Download Ollama (free)</button>
+
+      <!-- Platform install tabs -->
+      <div class="install-tabs">
+        <button class="tab-btn" data-tab="mac">macOS</button>
+        <button class="tab-btn" data-tab="windows">Windows</button>
+        <button class="tab-btn" data-tab="linux">Linux</button>
+      </div>
+
+      <!-- macOS -->
+      <div class="install-panel" id="tab-mac">
+        <p style="font-size:13px;color:#888;margin-bottom:12px">Option A — Homebrew:</p>
+        <div class="code-block">brew install ollama</div>
+        <p style="font-size:13px;color:#888;margin-bottom:12px">Option B — Installer:</p>
+        <div class="cta-stack">
+          <button class="btn-primary" onclick="openUrl('https://ollama.ai/download/mac')">
+            Download Ollama for macOS
+          </button>
+        </div>
+        <p class="hint-text">After installing, Ollama starts automatically. Then click Check Again.</p>
+      </div>
+
+      <!-- Windows -->
+      <div class="install-panel" id="tab-windows">
+        <p style="font-size:13px;color:#888;margin-bottom:12px">Download the Windows installer from ollama.ai:</p>
+        <div class="cta-stack">
+          <button class="btn-primary" onclick="openUrl('https://ollama.ai/download/windows')">
+            Download Ollama for Windows
+          </button>
+        </div>
+        <p class="hint-text">
+          Run the installer, then open a new Command Prompt and type <code style="color:#4ecdc4">ollama serve</code> if it's not running automatically.
+        </p>
+      </div>
+
+      <!-- Linux -->
+      <div class="install-panel" id="tab-linux">
+        <p style="font-size:13px;color:#888;margin-bottom:12px">One-line install (curl):</p>
+        <div class="code-block">curl -fsSL https://ollama.ai/install.sh | sh</div>
+        <p style="font-size:13px;color:#888;margin-bottom:12px">Then start the server:</p>
+        <div class="code-block">ollama serve</div>
+        <p class="hint-text">Or see <a href="#" style="color:#f5a623" onclick="openUrl('https://ollama.ai/download/linux');return false">ollama.ai/download/linux</a> for manual install.</p>
+      </div>
+
+      <div style="margin-top: 20px;">
         <button class="btn-secondary" id="check-again-btn-1">Check Again</button>
       </div>
-      <p class="hint-text">After installing, make sure Ollama is running, then click Check Again.</p>
     </div>
 
-    <!-- ── State 2: Ollama installed, pulling models ── -->
+    <!-- ── State 2: Pulling models ── -->
     <div id="state-pulling" class="state-panel">
       <div class="icon">⬇️</div>
       <h1 class="headline">Downloading AI Models</h1>
       <p class="body-text">
-        One-time setup. Models run locally — your files never leave your Mac.
+        One-time setup. Models run locally — your files never leave your machine.
       </p>
+      <div class="model-reason" id="model-reason"></div>
 
       <div class="progress-wrap">
         <div class="progress-model-name" id="current-model-name">Preparing...</div>
@@ -248,9 +364,7 @@
         </div>
         <div class="progress-pct" id="progress-pct">0%</div>
 
-        <div class="model-queue" id="model-queue">
-          <!-- populated by JS -->
-        </div>
+        <div class="model-queue" id="model-queue"></div>
       </div>
     </div>
 
@@ -264,8 +378,7 @@
   </div>
 
   <script>
-    const { invoke, event } = window.__TAURI__;
-    const { open: openUrl } = window.__TAURI__.shell || {};
+    const { invoke } = window.__TAURI__.core;
 
     // ── Helpers ──────────────────────────────────────────────────────────────
 
@@ -274,11 +387,52 @@
       document.getElementById(id).classList.add('active');
     }
 
-    // ── Models to pull ───────────────────────────────────────────────────────
+    async function openUrl(url) {
+      try {
+        if (window.__TAURI__.shell && window.__TAURI__.shell.open) {
+          await window.__TAURI__.shell.open(url);
+        } else {
+          window.open(url, '_blank');
+        }
+      } catch (e) {
+        window.open(url, '_blank');
+      }
+    }
 
-    const MODELS_TO_PULL = [
-      { name: 'nomic-embed-text', label: 'Embedding model (~275MB)' },
-      { name: 'llama3.2:3b',      label: 'Chat model (~2GB)' },
+    // ── Platform tab logic ────────────────────────────────────────────────────
+
+    const PLATFORM_TAB_MAP = {
+      'aarch64': 'mac',
+      'arm64':   'mac',
+      'x86_64':  detectPlatformFromUA(),
+      'default': 'mac',
+    };
+
+    function detectPlatformFromUA() {
+      const ua = navigator.userAgent.toLowerCase();
+      if (ua.includes('win'))   return 'windows';
+      if (ua.includes('linux')) return 'linux';
+      return 'mac';
+    }
+
+    function activateTab(name) {
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.tab === name);
+      });
+      document.querySelectorAll('.install-panel').forEach(p => {
+        p.classList.toggle('active', p.id === 'tab-' + name);
+      });
+    }
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => activateTab(btn.dataset.tab));
+    });
+
+    // ── Models to pull (populated after hardware detection) ───────────────────
+
+    let MODELS_TO_PULL = [
+      { name: 'nomic-embed-text', label: 'Embedding model (~275 MB)' },
+      { name: 'llama3.2:3b',      label: 'Chat model (~2 GB)' },
     ];
 
     // ── Queue UI ─────────────────────────────────────────────────────────────
@@ -310,7 +464,6 @@
 
     async function pullNextModel() {
       if (currentModelIdx >= MODELS_TO_PULL.length) {
-        // All done
         showState('state-ready');
         setTimeout(() => invoke('check_ollama'), 1500);
         return;
@@ -326,7 +479,6 @@
 
       await cleanupListeners();
 
-      // Set up listeners before pulling
       pullListenerUnlisten = await window.__TAURI__.event.listen('pull-progress', (e) => {
         const d = e.payload;
         if (d.model !== model.name) return;
@@ -351,48 +503,64 @@
       invoke('pull_model', { model: model.name });
     }
 
+    // ── Hardware detection ────────────────────────────────────────────────────
+
+    async function loadHardwareInfo() {
+      try {
+        const hw = await invoke('get_hardware_info');
+        document.getElementById('hw-badge').textContent =
+          `${hw.cpu_brand} · ${hw.ram_gb} GB RAM`;
+
+        // Update chat model in pull list based on hardware
+        MODELS_TO_PULL[1].name  = hw.chat_model;
+        MODELS_TO_PULL[1].label = `Chat model (${hw.chat_model})`;
+        document.getElementById('model-reason').textContent = hw.reason;
+
+        // Auto-select platform tab from arch
+        const tab = hw.arch === 'arm64' ? 'mac'
+                  : detectPlatformFromUA();
+        activateTab(tab);
+
+        return hw;
+      } catch (e) {
+        document.getElementById('hw-badge').textContent = 'Hardware info unavailable';
+        activateTab(detectPlatformFromUA());
+        return null;
+      }
+    }
+
     // ── Init ─────────────────────────────────────────────────────────────────
 
     async function init() {
-      // First check if Ollama is reachable by trying check_ollama
-      // We determine Ollama status by trying list_models
+      await loadHardwareInfo();
+
       let models = [];
       try {
         models = await invoke('list_models');
       } catch (e) {
-        // Ollama not running → not installed (or not started)
         models = null;
       }
 
       if (models === null) {
-        // Ollama not reachable
         showState('state-not-installed');
         return;
       }
 
-      // Ollama is running — check which required models are missing
       const missingModels = MODELS_TO_PULL.filter(m => {
-        // models array contains names like "nomic-embed-text:latest", "llama3.2:3b"
         return !models.some(installed => installed.startsWith(m.name.split(':')[0]));
       });
 
       if (missingModels.length === 0) {
-        // All models already installed
         showState('state-ready');
         setTimeout(() => invoke('check_ollama'), 1200);
         return;
       }
 
-      // Need to pull some models
       showState('state-pulling');
 
-      // Only pull the missing ones
-      // Reorder MODELS_TO_PULL to skip already-installed ones
       const filteredModels = MODELS_TO_PULL.filter(m =>
         missingModels.some(mm => mm.name === m.name)
       );
-
-      // Replace global pull list with filtered
       MODELS_TO_PULL.length = 0;
       filteredModels.forEach(m => MODELS_TO_PULL.push(m));
 
@@ -402,23 +570,7 @@
 
     // ── Button handlers ──────────────────────────────────────────────────────
 
-    document.getElementById('download-ollama-btn').addEventListener('click', async () => {
-      // Open ollama.ai in default browser
-      try {
-        // Try tauri shell open
-        if (window.__TAURI__.shell && window.__TAURI__.shell.open) {
-          await window.__TAURI__.shell.open('https://ollama.ai');
-        } else {
-          window.open('https://ollama.ai', '_blank');
-        }
-      } catch (e) {
-        window.open('https://ollama.ai', '_blank');
-      }
-    });
-
-    document.getElementById('check-again-btn-1').addEventListener('click', () => {
-      init();
-    });
+    document.getElementById('check-again-btn-1').addEventListener('click', () => init());
 
     // ── Start ────────────────────────────────────────────────────────────────
     init();
