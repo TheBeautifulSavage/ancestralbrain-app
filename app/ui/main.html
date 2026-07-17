@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ancestral Brain — Producer Vault</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      background-color: #0a0a0a;
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+    }
+
+    /* ── Top Bar ── */
+    .top-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      background-color: #0a0a0a;
+      border-bottom: 1px solid #1a1a1a;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      height: 48px;
+    }
+
+    .wordmark {
+      font-size: 16px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: -0.01em;
+    }
+
+    .feedback-link a {
+      font-size: 13px;
+      color: #555555;
+      text-decoration: none;
+      transition: color 0.15s ease;
+    }
+
+    .feedback-link a:hover {
+      color: #888888;
+    }
+
+    /* ── Main Content ── */
+    .main-content {
+      padding-top: 48px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Indexing State ── */
+    .indexing-section {
+      display: none;
+      flex: 1;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 24px;
+    }
+
+    body.indexing .indexing-section {
+      display: flex;
+    }
+
+    body.indexing .ready-section {
+      display: none;
+    }
+
+    .indexing-inner {
+      width: 100%;
+      max-width: 520px;
+      text-align: center;
+    }
+
+    .indexing-label {
+      font-size: 20px;
+      font-weight: 600;
+      color: #ffffff;
+      margin-bottom: 20px;
+    }
+
+    progress#index-progress {
+      -webkit-appearance: none;
+      appearance: none;
+      display: block;
+      width: 100%;
+      height: 8px;
+      border: none;
+      border-radius: 4px;
+      overflow: hidden;
+      background-color: #1e1e1e;
+      margin-bottom: 14px;
+    }
+
+    progress#index-progress::-webkit-progress-bar {
+      background-color: #1e1e1e;
+      border-radius: 4px;
+    }
+
+    progress#index-progress::-webkit-progress-value {
+      background-color: #f5a623;
+      border-radius: 4px;
+      transition: width 0.3s ease;
+    }
+
+    progress#index-progress::-moz-progress-bar {
+      background-color: #f5a623;
+      border-radius: 4px;
+    }
+
+    #index-status {
+      font-size: 14px;
+      color: #999999;
+      line-height: 1.5;
+    }
+
+    #skipped-count {
+      font-size: 13px;
+      color: #666666;
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+
+    /* ── Ready State ── */
+    .ready-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 28px 24px 40px;
+      max-width: 760px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    body.indexing .ready-section {
+      display: none;
+    }
+
+    #error-banner {
+      background: #3a1010;
+      color: #ff6b6b;
+      padding: 10px 16px;
+      border-radius: 6px;
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+
+    #search-input {
+      width: 100%;
+      background-color: #111111;
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      font-size: 18px;
+      padding: 16px;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      margin-bottom: 16px;
+    }
+
+    #search-input::placeholder {
+      color: #444444;
+    }
+
+    #search-input:focus {
+      border-color: #f5a623;
+      box-shadow: 0 0 0 2px rgba(245, 166, 35, 0.18);
+    }
+
+    /* ── Mode Toggle ── */
+    .mode-toggle {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .mode-toggle button {
+      padding: 7px 18px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 20px;
+      border: 1px solid #2a2a2a;
+      cursor: pointer;
+      background-color: transparent;
+      color: #777777;
+      transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .mode-toggle button:hover {
+      color: #cccccc;
+      border-color: #444444;
+    }
+
+    /* Active state: mode-search */
+    body.mode-search #mode-search,
+    body:not(.mode-chat) #mode-search {
+      background-color: #f5a623;
+      color: #000000;
+      border-color: #f5a623;
+    }
+
+    body.mode-chat #mode-chat {
+      background-color: #f5a623;
+      color: #000000;
+      border-color: #f5a623;
+    }
+
+    body.mode-chat #mode-search {
+      background-color: transparent;
+      color: #777777;
+      border-color: #2a2a2a;
+    }
+
+    /* ── Results ── */
+    #results {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .result-item {
+      background-color: #111111;
+      border: 1px solid #1e1e1e;
+      border-radius: 6px;
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: border-color 0.15s ease, background-color 0.15s ease;
+    }
+
+    .result-item:hover {
+      border-color: #f5a623;
+      background-color: #141414;
+    }
+
+    .result-filename {
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+
+    .result-path {
+      font-size: 12px;
+      color: #555555;
+      word-break: break-all;
+    }
+
+    .result-score {
+      font-size: 11px;
+      color: #444444;
+      margin-top: 4px;
+    }
+
+    /* ── Chat Answer ── */
+    #chat-answer {
+      background-color: #111111;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      padding: 16px;
+      font-size: 15px;
+      color: #e0e0e0;
+      line-height: 1.7;
+    }
+
+    .chat-answer-text {
+      margin-bottom: 16px;
+    }
+
+    .chat-sources {
+      border-top: 1px solid #1e1e1e;
+      padding-top: 12px;
+    }
+
+    .chat-sources-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #555555;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .chat-source-item {
+      font-size: 12px;
+      color: #666666;
+      cursor: pointer;
+      padding: 4px 0;
+      word-break: break-all;
+      transition: color 0.15s ease;
+    }
+
+    .chat-source-item:hover {
+      color: #f5a623;
+    }
+  </style>
+</head>
+<body class="ready">
+
+  <!-- Top Bar -->
+  <header class="top-bar">
+    <span class="wordmark">Ancestral Brain</span>
+    <span class="feedback-link">
+      <a href="mailto:FEEDBACK_EMAIL_PLACEHOLDER">Send Feedback</a>
+    </span>
+  </header>
+
+  <!-- Main Content -->
+  <div class="main-content">
+
+    <!-- State A: Indexing -->
+    <div class="indexing-section">
+      <div class="indexing-inner">
+        <p class="indexing-label">Indexing your vault…</p>
+        <progress id="index-progress" value="0" max="100"></progress>
+        <p id="index-status">Starting…</p>
+        <p id="skipped-count" style="display:none"></p>
+      </div>
+    </div>
+
+    <!-- State B: Ready -->
+    <div class="ready-section">
+      <div id="error-banner" style="display:none"></div>
+
+      <input
+        type="text"
+        id="search-input"
+        placeholder="Search your vault or ask a question…"
+        autocomplete="off"
+        spellcheck="false"
+      />
+
+      <div class="mode-toggle">
+        <button id="mode-search">Search</button>
+        <button id="mode-chat">Ask AI</button>
+      </div>
+
+      <div id="results"></div>
+      <div id="chat-answer" style="display:none"></div>
+    </div>
+
+  </div>
+
+  <script>
+    // ── Mode Toggle ──
+    document.getElementById('mode-search').addEventListener('click', function() {
+      document.body.classList.remove('mode-chat');
+      document.body.classList.add('mode-search');
+    });
+
+    document.getElementById('mode-chat').addEventListener('click', function() {
+      document.body.classList.remove('mode-search');
+      document.body.classList.add('mode-chat');
+    });
+
+    // ── Public API for Tauri ──
+
+    window.setIndexing = function(pct, status) {
+      document.body.classList.remove('ready');
+      document.body.classList.add('indexing');
+      var bar = document.getElementById('index-progress');
+      var statusEl = document.getElementById('index-status');
+      bar.value = pct;
+      statusEl.textContent = status || '';
+    };
+
+    window.setReady = function(skippedCount) {
+      document.body.classList.remove('indexing');
+      document.body.classList.add('ready');
+      var skippedEl = document.getElementById('skipped-count');
+      if (skippedCount && skippedCount > 0) {
+        skippedEl.textContent = skippedCount + ' file' + (skippedCount === 1 ? '' : 's') + ' skipped (unsupported format or read error).';
+        skippedEl.style.display = 'block';
+      } else {
+        skippedEl.style.display = 'none';
+      }
+    };
+
+    window.showResults = function(items) {
+      var container = document.getElementById('results');
+      container.innerHTML = '';
+      document.getElementById('chat-answer').style.display = 'none';
+      if (!items || items.length === 0) {
+        container.innerHTML = '<p style="color:#555;font-size:14px;padding:12px 0;">No results found.</p>';
+        return;
+      }
+      items.forEach(function(item) {
+        var div = document.createElement('div');
+        div.className = 'result-item';
+        div.innerHTML =
+          '<div class="result-filename">' + escapeHtml(item.filename) + '</div>' +
+          '<div class="result-path">' + escapeHtml(item.path) + '</div>' +
+          (item.score !== undefined ? '<div class="result-score">Score: ' + (Math.round(item.score * 100) / 100) + '</div>' : '');
+        div.addEventListener('click', function() {
+          window.__TAURI__.core.invoke('reveal_in_finder', { path: item.path });
+        });
+        container.appendChild(div);
+      });
+    };
+
+    window.showChatAnswer = function(text, sources) {
+      var chatEl = document.getElementById('chat-answer');
+      var html = '<div class="chat-answer-text">' + escapeHtml(text).replace(/\n/g, '<br>') + '</div>';
+      if (sources && sources.length > 0) {
+        html += '<div class="chat-sources">';
+        html += '<div class="chat-sources-label">Sources</div>';
+        sources.forEach(function(src) {
+          html += '<div class="chat-source-item" data-path="' + escapeAttr(src) + '">' + escapeHtml(src) + '</div>';
+        });
+        html += '</div>';
+      }
+      chatEl.innerHTML = html;
+      chatEl.style.display = 'block';
+
+      // Wire up source clicks
+      chatEl.querySelectorAll('.chat-source-item').forEach(function(el) {
+        el.addEventListener('click', function() {
+          window.__TAURI__.core.invoke('reveal_in_finder', { path: el.getAttribute('data-path') });
+        });
+      });
+    };
+
+    window.showError = function(msg) {
+      var banner = document.getElementById('error-banner');
+      banner.textContent = msg;
+      banner.style.display = 'block';
+      clearTimeout(banner._hideTimer);
+      banner._hideTimer = setTimeout(function() {
+        banner.style.display = 'none';
+      }, 5000);
+    };
+
+    window.clearResults = function() {
+      document.getElementById('results').innerHTML = '';
+      var chatEl = document.getElementById('chat-answer');
+      chatEl.innerHTML = '';
+      chatEl.style.display = 'none';
+    };
+
+    // ── Helpers ──
+    function escapeHtml(str) {
+      if (typeof str !== 'string') return '';
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function escapeAttr(str) {
+      if (typeof str !== 'string') return '';
+      return str.replace(/"/g, '&quot;');
+    }
+
+    // ── Tauri event listeners ────────────────────────────────────────────
+    if (window.__TAURI__) {
+      window.__TAURI__.event.listen('index-progress', function(evt) {
+        window.setIndexing(evt.payload.pct, evt.payload.status);
+      });
+      window.__TAURI__.event.listen('index-done', function(evt) {
+        window.setReady(evt.payload.skipped || 0);
+      });
+      window.__TAURI__.event.listen('index-error', function(evt) {
+        window.showError(evt.payload || 'Indexing failed. Check that the folder exists.');
+        window.setReady(0);
+      });
+    }
+
+    // ── Search / chat dispatch ───────────────────────────────────────────
+    var searchInput = document.getElementById('search-input');
+    var currentMode = 'search';
+
+    document.getElementById('mode-search').addEventListener('click', function() {
+      currentMode = 'search';
+    });
+    document.getElementById('mode-chat').addEventListener('click', function() {
+      currentMode = 'chat';
+    });
+
+    if (searchInput) {
+      searchInput.addEventListener('keydown', function(e) {
+        if (e.key !== 'Enter' || !this.value.trim()) return;
+        var q = this.value.trim();
+        window.clearResults();
+        if (currentMode === 'chat') {
+          if (!window.__TAURI__) return;
+          window.__TAURI__.core.invoke('chat', { question: q })
+            .then(function(r) { window.showChatAnswer(r.answer, r.sources); })
+            .catch(function(err) { window.showError(err); });
+        } else {
+          if (!window.__TAURI__) return;
+          window.__TAURI__.core.invoke('search', { query: q })
+            .then(function(items) { window.showResults(items); })
+            .catch(function(err) { window.showError(err); });
+        }
+      });
+    }
+  </script>
+</body>
+</html>

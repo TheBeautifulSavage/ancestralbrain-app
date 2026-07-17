@@ -1,0 +1,39 @@
+[package]
+name = "ancestral-brain"
+version = "0.1.0"
+description = "Ancestral Brain Alpha — Producer Vault"
+authors = ["Ancestral Brain"]
+edition = "2021"
+rust-version = "1.77"
+
+[lib]
+name = "ancestral_brain_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[[bin]]
+name = "ancestral-brain"
+path = "src/main.rs"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["dialog"] }
+tauri-plugin-dialog = "2"
+tauri-plugin-shell = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+rusqlite = { version = "0.32", features = ["bundled"] }
+sqlite-vec = "0.1"
+walkdir = "2"
+symphonia = { version = "0.5", features = ["all"] }
+reqwest = { version = "0.12", features = ["blocking", "json"] }
+anyhow = "1"
+tokio = { version = "1", features = ["full"] }
+lopdf = "0.33"
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+strip = true

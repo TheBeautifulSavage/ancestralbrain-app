@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ancestral Brain — Ollama Required</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      background-color: #0a0a0a;
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 560px;
+      text-align: center;
+    }
+
+    .app-title {
+      font-size: 28px;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.2;
+    }
+
+    .app-subtitle {
+      font-size: 14px;
+      font-weight: 500;
+      color: #f5a623;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-top: 6px;
+    }
+
+    .icon {
+      font-size: 64px;
+      line-height: 1;
+      margin: 32px 0 20px;
+    }
+
+    .headline {
+      font-size: 32px;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.2;
+      margin-bottom: 14px;
+    }
+
+    .body-text {
+      font-size: 16px;
+      color: #cccccc;
+      line-height: 1.65;
+      max-width: 460px;
+      margin: 0 auto 28px;
+    }
+
+    .steps-block {
+      background-color: #111111;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: left;
+      margin-bottom: 28px;
+    }
+
+    .step {
+      margin-bottom: 18px;
+    }
+
+    .step:last-child {
+      margin-bottom: 0;
+    }
+
+    .step-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #f5a623;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    pre {
+      margin: 0;
+    }
+
+    code {
+      display: block;
+      font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
+      font-size: 13px;
+      color: #e0e0e0;
+      background-color: #0a0a0a;
+      border: 1px solid #222222;
+      border-radius: 4px;
+      padding: 8px 12px;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    .multi-code code {
+      margin-bottom: 6px;
+    }
+
+    .multi-code code:last-child {
+      margin-bottom: 0;
+    }
+
+    .cta-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    #check-again-btn {
+      display: block;
+      width: 100%;
+      max-width: 400px;
+      padding: 14px 24px;
+      background-color: #f5a623;
+      color: #000000;
+      font-family: 'Inter', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.15s ease, transform 0.1s ease;
+    }
+
+    #check-again-btn:hover {
+      background-color: #e09610;
+    }
+
+    #check-again-btn:active {
+      transform: scale(0.98);
+    }
+
+    .hint-text {
+      font-size: 12px;
+      color: #555555;
+      line-height: 1.6;
+      max-width: 380px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="app-title">Ancestral Brain</div>
+    <div class="app-subtitle">Alpha — Producer Vault</div>
+
+    <div class="icon">⚡</div>
+
+    <h1 class="headline">Ollama isn't running yet.</h1>
+    <p class="body-text">
+      Ancestral Brain uses Ollama to run AI locally on your machine.
+      It's free, open-source, and your data never leaves.
+    </p>
+
+    <div class="steps-block">
+      <div class="step">
+        <div class="step-label">Step 1 — Install Ollama</div>
+        <pre><code>brew install ollama</code></pre>
+      </div>
+
+      <div class="step">
+        <div class="step-label">Step 2 — Start it</div>
+        <pre><code>ollama serve</code></pre>
+      </div>
+
+      <div class="step">
+        <div class="step-label">Step 3 — Pull the AI models (one-time, ~8GB)</div>
+        <div class="multi-code">
+          <pre><code>ollama pull llama3.1:8b</code></pre>
+          <pre><code>ollama pull nomic-embed-text</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="cta-wrapper">
+      <button id="check-again-btn">Check Again</button>
+      <p class="hint-text">
+        Already have Ollama? Make sure <code style="display:inline;background:none;border:none;padding:0;font-size:12px;color:#888;">ollama serve</code> is running, then click Check Again.
+      </p>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('check-again-btn').addEventListener('click', function() {
+      window.__TAURI__.core.invoke('check_ollama');
+    });
+  </script>
+</body>
+</html>
