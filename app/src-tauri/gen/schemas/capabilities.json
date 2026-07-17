@@ -1,0 +1,1 @@
+{"default":{"identifier":"default","description":"Default capabilities for Ancestral Brain","local":true,"windows":["main"],"permissions":["core:default","core:event:default","core:webview:default","dialog:default","shell:default"]}}

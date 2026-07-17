@@ -3,20 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ancestral Brain — Ollama Required</title>
+  <title>Ancestral Brain — AI Setup</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet" />
   <style>
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html, body {
-      height: 100%;
-    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
 
     body {
       background-color: #0a0a0a;
@@ -31,7 +24,7 @@
 
     .container {
       width: 100%;
-      max-width: 560px;
+      max-width: 520px;
       text-align: center;
     }
 
@@ -39,11 +32,10 @@
       font-size: 28px;
       font-weight: 800;
       color: #ffffff;
-      line-height: 1.2;
     }
 
     .app-subtitle {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 500;
       color: #f5a623;
       letter-spacing: 0.12em;
@@ -51,90 +43,37 @@
       margin-top: 6px;
     }
 
+    /* ── State panels ── */
+    .state-panel { display: none; }
+    .state-panel.active { display: block; }
+
     .icon {
       font-size: 64px;
       line-height: 1;
-      margin: 32px 0 20px;
+      margin: 32px 0 18px;
     }
 
     .headline {
-      font-size: 32px;
+      font-size: 28px;
       font-weight: 800;
       color: #ffffff;
-      line-height: 1.2;
-      margin-bottom: 14px;
+      line-height: 1.25;
+      margin-bottom: 12px;
     }
 
     .body-text {
-      font-size: 16px;
+      font-size: 15px;
       color: #cccccc;
       line-height: 1.65;
-      max-width: 460px;
+      max-width: 420px;
       margin: 0 auto 28px;
     }
 
-    .steps-block {
-      background-color: #111111;
-      border: 1px solid #2a2a2a;
-      border-radius: 8px;
-      padding: 20px;
-      text-align: left;
-      margin-bottom: 28px;
-    }
-
-    .step {
-      margin-bottom: 18px;
-    }
-
-    .step:last-child {
-      margin-bottom: 0;
-    }
-
-    .step-label {
-      font-size: 12px;
-      font-weight: 600;
-      color: #f5a623;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 8px;
-    }
-
-    pre {
-      margin: 0;
-    }
-
-    code {
-      display: block;
-      font-family: 'SF Mono', 'Fira Code', 'Fira Mono', 'Roboto Mono', monospace;
-      font-size: 13px;
-      color: #e0e0e0;
-      background-color: #0a0a0a;
-      border: 1px solid #222222;
-      border-radius: 4px;
-      padding: 8px 12px;
-      white-space: pre;
-      overflow-x: auto;
-    }
-
-    .multi-code code {
-      margin-bottom: 6px;
-    }
-
-    .multi-code code:last-child {
-      margin-bottom: 0;
-    }
-
-    .cta-wrapper {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 14px;
-    }
-
-    #check-again-btn {
-      display: block;
+    /* ── Buttons ── */
+    .btn-primary {
+      display: inline-block;
       width: 100%;
-      max-width: 400px;
+      max-width: 380px;
       padding: 14px 24px;
       background-color: #f5a623;
       color: #000000;
@@ -145,21 +84,131 @@
       border-radius: 6px;
       cursor: pointer;
       transition: background-color 0.15s ease, transform 0.1s ease;
+      text-decoration: none;
     }
 
-    #check-again-btn:hover {
-      background-color: #e09610;
+    .btn-primary:hover { background-color: #e09610; }
+    .btn-primary:active { transform: scale(0.98); }
+
+    .btn-secondary {
+      display: inline-block;
+      width: 100%;
+      max-width: 380px;
+      padding: 12px 24px;
+      background-color: transparent;
+      color: #888;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      border: 1px solid #333;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: border-color 0.15s ease, color 0.15s ease;
     }
 
-    #check-again-btn:active {
-      transform: scale(0.98);
+    .btn-secondary:hover { border-color: #666; color: #ccc; }
+
+    .cta-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* ── Progress bar ── */
+    .progress-wrap {
+      background: #111;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 0 auto 24px;
+      max-width: 420px;
+      text-align: left;
+    }
+
+    .progress-model-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #f5a623;
+      margin-bottom: 10px;
+      letter-spacing: 0.05em;
+    }
+
+    .progress-status {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 10px;
+      min-height: 18px;
+    }
+
+    .progress-bar-bg {
+      background: #1a1a1a;
+      border-radius: 4px;
+      height: 8px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #f5a623, #ffcf73);
+      border-radius: 4px;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .progress-pct {
+      font-size: 12px;
+      color: #666;
+      text-align: right;
+    }
+
+    .model-queue {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .model-queue-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .model-queue-item.done { color: #4caf50; }
+    .model-queue-item.active { color: #f5a623; }
+    .model-queue-item.pending { color: #444; }
+
+    .queue-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      flex-shrink: 0;
+    }
+
+    /* ── Ready state ── */
+    .ready-badge {
+      display: inline-block;
+      background: rgba(76, 175, 80, 0.15);
+      border: 1px solid rgba(76, 175, 80, 0.4);
+      color: #4caf50;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 16px;
     }
 
     .hint-text {
       font-size: 12px;
-      color: #555555;
-      line-height: 1.6;
-      max-width: 380px;
+      color: #444;
+      margin-top: 16px;
     }
   </style>
 </head>
@@ -168,46 +217,211 @@
     <div class="app-title">Ancestral Brain</div>
     <div class="app-subtitle">Alpha — Producer Vault</div>
 
-    <div class="icon">⚡</div>
-
-    <h1 class="headline">Ollama isn't running yet.</h1>
-    <p class="body-text">
-      Ancestral Brain uses Ollama to run AI locally on your machine.
-      It's free, open-source, and your data never leaves.
-    </p>
-
-    <div class="steps-block">
-      <div class="step">
-        <div class="step-label">Step 1 — Install Ollama</div>
-        <pre><code>brew install ollama</code></pre>
+    <!-- ── State 1: Ollama not installed ── -->
+    <div id="state-not-installed" class="state-panel">
+      <div class="icon">🤖</div>
+      <h1 class="headline">AI engine not found</h1>
+      <p class="body-text">
+        Ancestral Brain runs AI locally on your Mac using Ollama — free, private, no cloud.
+        Download and install it first.
+      </p>
+      <div class="cta-stack">
+        <button class="btn-primary" id="download-ollama-btn">Download Ollama (free)</button>
+        <button class="btn-secondary" id="check-again-btn-1">Check Again</button>
       </div>
+      <p class="hint-text">After installing, make sure Ollama is running, then click Check Again.</p>
+    </div>
 
-      <div class="step">
-        <div class="step-label">Step 2 — Start it</div>
-        <pre><code>ollama serve</code></pre>
-      </div>
+    <!-- ── State 2: Ollama installed, pulling models ── -->
+    <div id="state-pulling" class="state-panel">
+      <div class="icon">⬇️</div>
+      <h1 class="headline">Downloading AI Models</h1>
+      <p class="body-text">
+        One-time setup. Models run locally — your files never leave your Mac.
+      </p>
 
-      <div class="step">
-        <div class="step-label">Step 3 — Pull the AI models (one-time, ~8GB)</div>
-        <div class="multi-code">
-          <pre><code>ollama pull llama3.1:8b</code></pre>
-          <pre><code>ollama pull nomic-embed-text</code></pre>
+      <div class="progress-wrap">
+        <div class="progress-model-name" id="current-model-name">Preparing...</div>
+        <div class="progress-status" id="progress-status">Starting download...</div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progress-fill"></div>
+        </div>
+        <div class="progress-pct" id="progress-pct">0%</div>
+
+        <div class="model-queue" id="model-queue">
+          <!-- populated by JS -->
         </div>
       </div>
     </div>
 
-    <div class="cta-wrapper">
-      <button id="check-again-btn">Check Again</button>
-      <p class="hint-text">
-        Already have Ollama? Make sure <code style="display:inline;background:none;border:none;padding:0;font-size:12px;color:#888;">ollama serve</code> is running, then click Check Again.
-      </p>
+    <!-- ── State 3: Ready ── -->
+    <div id="state-ready" class="state-panel">
+      <div class="icon">✅</div>
+      <div class="ready-badge">Ready</div>
+      <h1 class="headline">AI is ready</h1>
+      <p class="body-text">All models are installed. Loading your vault now...</p>
     </div>
   </div>
 
   <script>
-    document.getElementById('check-again-btn').addEventListener('click', function() {
-      window.__TAURI__.core.invoke('check_ollama');
+    const { invoke, event } = window.__TAURI__;
+    const { open: openUrl } = window.__TAURI__.shell || {};
+
+    // ── Helpers ──────────────────────────────────────────────────────────────
+
+    function showState(id) {
+      document.querySelectorAll('.state-panel').forEach(el => el.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    // ── Models to pull ───────────────────────────────────────────────────────
+
+    const MODELS_TO_PULL = [
+      { name: 'nomic-embed-text', label: 'Embedding model (~275MB)' },
+      { name: 'llama3.2:3b',      label: 'Chat model (~2GB)' },
+    ];
+
+    // ── Queue UI ─────────────────────────────────────────────────────────────
+
+    function renderQueue(currentIdx) {
+      const container = document.getElementById('model-queue');
+      container.innerHTML = MODELS_TO_PULL.map((m, i) => {
+        const cls = i < currentIdx ? 'done' : i === currentIdx ? 'active' : 'pending';
+        const label = i < currentIdx ? `✓ ${m.label}` : m.label;
+        return `<div class="model-queue-item ${cls}">
+          <div class="queue-dot"></div>
+          <span>${label}</span>
+        </div>`;
+      }).join('');
+    }
+
+    // ── Pull sequence ────────────────────────────────────────────────────────
+
+    let pullListenerUnlisten = null;
+    let pullDoneUnlisten = null;
+    let pullErrorUnlisten = null;
+    let currentModelIdx = 0;
+
+    async function cleanupListeners() {
+      if (pullListenerUnlisten) { pullListenerUnlisten(); pullListenerUnlisten = null; }
+      if (pullDoneUnlisten) { pullDoneUnlisten(); pullDoneUnlisten = null; }
+      if (pullErrorUnlisten) { pullErrorUnlisten(); pullErrorUnlisten = null; }
+    }
+
+    async function pullNextModel() {
+      if (currentModelIdx >= MODELS_TO_PULL.length) {
+        // All done
+        showState('state-ready');
+        setTimeout(() => invoke('check_ollama'), 1500);
+        return;
+      }
+
+      const model = MODELS_TO_PULL[currentModelIdx];
+      renderQueue(currentModelIdx);
+
+      document.getElementById('current-model-name').textContent = model.label;
+      document.getElementById('progress-status').textContent = 'Checking if already installed...';
+      document.getElementById('progress-fill').style.width = '0%';
+      document.getElementById('progress-pct').textContent = '0%';
+
+      await cleanupListeners();
+
+      // Set up listeners before pulling
+      pullListenerUnlisten = await window.__TAURI__.event.listen('pull-progress', (e) => {
+        const d = e.payload;
+        if (d.model !== model.name) return;
+        const pct = d.pct || 0;
+        document.getElementById('progress-fill').style.width = pct + '%';
+        document.getElementById('progress-pct').textContent = pct + '%';
+        document.getElementById('progress-status').textContent = d.status || 'Downloading...';
+      });
+
+      pullDoneUnlisten = await window.__TAURI__.event.listen('pull-done', (e) => {
+        if (e.payload !== model.name) return;
+        currentModelIdx++;
+        renderQueue(currentModelIdx);
+        pullNextModel();
+      });
+
+      pullErrorUnlisten = await window.__TAURI__.event.listen('pull-error', (e) => {
+        console.error('Pull error:', e.payload);
+        document.getElementById('progress-status').textContent = 'Error: ' + e.payload + ' — retrying may help.';
+      });
+
+      invoke('pull_model', { model: model.name });
+    }
+
+    // ── Init ─────────────────────────────────────────────────────────────────
+
+    async function init() {
+      // First check if Ollama is reachable by trying check_ollama
+      // We determine Ollama status by trying list_models
+      let models = [];
+      try {
+        models = await invoke('list_models');
+      } catch (e) {
+        // Ollama not running → not installed (or not started)
+        models = null;
+      }
+
+      if (models === null) {
+        // Ollama not reachable
+        showState('state-not-installed');
+        return;
+      }
+
+      // Ollama is running — check which required models are missing
+      const missingModels = MODELS_TO_PULL.filter(m => {
+        // models array contains names like "nomic-embed-text:latest", "llama3.2:3b"
+        return !models.some(installed => installed.startsWith(m.name.split(':')[0]));
+      });
+
+      if (missingModels.length === 0) {
+        // All models already installed
+        showState('state-ready');
+        setTimeout(() => invoke('check_ollama'), 1200);
+        return;
+      }
+
+      // Need to pull some models
+      showState('state-pulling');
+
+      // Only pull the missing ones
+      // Reorder MODELS_TO_PULL to skip already-installed ones
+      const filteredModels = MODELS_TO_PULL.filter(m =>
+        missingModels.some(mm => mm.name === m.name)
+      );
+
+      // Replace global pull list with filtered
+      MODELS_TO_PULL.length = 0;
+      filteredModels.forEach(m => MODELS_TO_PULL.push(m));
+
+      currentModelIdx = 0;
+      await pullNextModel();
+    }
+
+    // ── Button handlers ──────────────────────────────────────────────────────
+
+    document.getElementById('download-ollama-btn').addEventListener('click', async () => {
+      // Open ollama.ai in default browser
+      try {
+        // Try tauri shell open
+        if (window.__TAURI__.shell && window.__TAURI__.shell.open) {
+          await window.__TAURI__.shell.open('https://ollama.ai');
+        } else {
+          window.open('https://ollama.ai', '_blank');
+        }
+      } catch (e) {
+        window.open('https://ollama.ai', '_blank');
+      }
     });
+
+    document.getElementById('check-again-btn-1').addEventListener('click', () => {
+      init();
+    });
+
+    // ── Start ────────────────────────────────────────────────────────────────
+    init();
   </script>
 </body>
 </html>

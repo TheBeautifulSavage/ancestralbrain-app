@@ -7,7 +7,12 @@ use std::path::Path;
 pub fn open(db_path: &Path) -> Result<Connection> {
     let conn = Connection::open(db_path)?;
     conn.execute_batch("PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON;")?;
-    sqlite_vec::load(&conn)?;
+    // Register sqlite-vec extension for vector operations
+    unsafe {
+        rusqlite::ffi::sqlite3_auto_extension(Some(std::mem::transmute(
+            sqlite_vec::sqlite3_vec_init as *const ()
+        )));
+    }
     create_schema(&conn)?;
     Ok(conn)
 }

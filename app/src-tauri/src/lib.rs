@@ -32,8 +32,11 @@ fn check_ollama(app: AppHandle) {
             win.eval("window.location.href='main.html'").ok();
         }
         // If vault folder is set, trigger index
-        let state = app.state::<AppState>();
-        if let Some(folder) = state.vault_folder.lock().unwrap().clone() {
+        let folder_opt = {
+            let state = app.state::<AppState>();
+            let x = state.vault_folder.lock().unwrap().clone(); x
+        };
+        if let Some(folder) = folder_opt {
             start_index(app.clone(), folder);
         }
     } else {
@@ -41,6 +44,99 @@ fn check_ollama(app: AppHandle) {
             win.eval("window.location.href='ollama_check.html'").ok();
         }
     }
+}
+
+/// List installed Ollama model names.
+#[tauri::command]
+fn list_models() -> Vec<String> {
+    ollama::list_models().unwrap_or_default()
+}
+
+/// Pull an Ollama model with progress events.
+/// Emits: "pull-progress" → {completed, total, status, pct}
+/// Emits: "pull-done"     → model name string
+/// Emits: "pull-error"    → error string
+#[tauri::command]
+fn pull_model(app: AppHandle, model: String) -> Result<(), String> {
+    let app2 = app.clone();
+    let model2 = model.clone();
+    std::thread::spawn(move || {
+        let result = ollama::pull_model(&model2, |completed, total, status| {
+            let pct = if total > 0 {
+                (completed as f64 / total as f64 * 100.0) as u32
+            } else {
+                0
+            };
+            app2.emit(
+                "pull-progress",
+                serde_json::json!({
+                    "model": model2,
+                    "completed": completed,
+                    "total": total,
+                    "status": status,
+                    "pct": pct
+                }),
+            )
+            .ok();
+        });
+
+        match result {
+            Ok(()) => {
+                app2.emit("pull-done", &model2).ok();
+            }
+            Err(e) => {
+                app2.emit("pull-error", e.to_string()).ok();
+            }
+        }
+    });
+    Ok(())
+}
+
+/// Get info about the current vault.
+#[tauri::command]
+fn get_vault_info(app: AppHandle) -> serde_json::Value {
+    let state = app.state::<AppState>();
+    let folder = state
+        .vault_folder
+        .lock()
+        .unwrap()
+        .clone()
+        .map(|p| p.to_string_lossy().to_string())
+        .unwrap_or_default();
+
+    let indexed_count = {
+        let conn = state.db.lock().ok();
+        conn.and_then(|c| {
+            c.query_row("SELECT COUNT(*) FROM files", [], |r| r.get::<_, i64>(0))
+                .ok()
+        })
+        .unwrap_or(0)
+    };
+
+    // Count markdown files in _ancestral_brain/
+    let markdown_count = if !folder.is_empty() {
+        let ab_dir = std::path::PathBuf::from(&folder).join("_ancestral_brain");
+        walkdir::WalkDir::new(&ab_dir)
+            .into_iter()
+            .filter_map(|e| e.ok())
+            .filter(|e| e.file_type().is_file())
+            .filter(|e| {
+                e.path()
+                    .extension()
+                    .and_then(|x| x.to_str())
+                    .map(|x| x == "md")
+                    .unwrap_or(false)
+            })
+            .count() as i64
+    } else {
+        0
+    };
+
+    serde_json::json!({
+        "folder": folder,
+        "indexed_count": indexed_count,
+        "markdown_count": markdown_count,
+    })
 }
 
 /// Open a folder picker dialog and persist the choice.
@@ -55,7 +151,7 @@ async fn pick_folder(app: AppHandle) -> Result<(), String> {
 
     match folder {
         Some(path) => {
-            let path_buf: PathBuf = path.into();
+            let path_buf: PathBuf = PathBuf::from(path.to_string());
             {
                 let state = app.state::<AppState>();
                 *state.vault_folder.lock().unwrap() = Some(path_buf.clone());
@@ -144,6 +240,7 @@ fn start_index(app: AppHandle, folder: PathBuf) {
         win.eval("window.location.href='main.html'").ok();
     }
 
+    let vault_root = folder.clone();
     let app2 = app.clone();
     std::thread::spawn(move || {
         let state = app2.state::<AppState>();
@@ -156,7 +253,7 @@ fn start_index(app: AppHandle, folder: PathBuf) {
         };
 
         let app3 = app2.clone();
-        let result = indexer::index_folder(&conn, &folder, move |pct, status| {
+        let result = indexer::index_folder(&conn, &folder, &vault_root, move |pct, status| {
             app3.emit("index-progress", serde_json::json!({ "pct": pct, "status": status })).ok();
         });
 
@@ -248,6 +345,9 @@ pub fn run() {
             reveal_in_finder,
             search,
             chat,
+            pull_model,
+            list_models,
+            get_vault_info,
         ])
         .run(tauri::generate_context!())
         .expect("error while running Ancestral Brain");
